@@ -7,6 +7,9 @@ var schema = buildSchema(`
         course(id: Int!): Course
         courses(topic: String): [Course]
     },
+    type Mutation {
+        updateCourseTopic(id: Int!, topic: String!): Course
+    }
     type Course {
         id: Int
         title: String
@@ -42,6 +45,7 @@ var coursesData = [
         url: 'https://codingthesmartway.com/courses/understand-javascript/'
     }
 ]
+
 var getCourse = function(args) { 
     var id = args.id;
     return coursesData.filter(course => {
@@ -56,9 +60,19 @@ var getCourses = function(args) {
         return coursesData;
     }
 }
+var updateCourseTopic = function({id, topic}) {
+    coursesData.map(course => {
+        if (course.id === id) {
+            course.topic = topic;
+            return course;
+        }
+    });
+    return coursesData.filter(course => course.id === id) [0];
+}
 var root = {
     course: getCourse,
-    courses: getCourses
+    courses: getCourses,
+    updateCourseTopic: updateCourseTopic
 };
 // Create an express server and a GraphQL endpoint
 var app = express();
